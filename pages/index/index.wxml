@@ -1,0 +1,84 @@
+<view class="page-container">
+  <!-- 用户状态区域 -->
+  <view class="user-section">
+    <view class="user-badge {{isLoggedIn ? 'user-badge-vip' : ''}}" bindtap="onUserTap">
+      <block wx:if="{{isLoggedIn}}">
+        <view class="user-icon">
+          <text class="icon-vip">👑</text>
+        </view>
+        <text class="user-name">{{userInfo.nickname}}</text>
+      </block>
+      <block wx:else>
+        <view class="user-icon">
+          <text class="icon-circle">○</text>
+        </view>
+        <text class="user-name">游客</text>
+      </block>
+    </view>
+  </view>
+
+  <!-- 权限提示条 - 游客显示 -->
+  <view class="quota-bar" wx:if="{{!isLoggedIn}}">
+    <text class="quota-text">非正式用户仅限50次对话，剩余: {{remainingCount}}/50</text>
+    <text class="login-btn" bindtap="goToLogin">去登录</text>
+  </view>
+
+  <!-- VIP提示条 - 已登录显示 -->
+  <view class="vip-bar" wx:else>
+    <text class="vip-icon">⭐</text>
+    <text class="vip-text">尊贵会员，畅享无限对话</text>
+    <text class="vip-expire">{{userInfo.vipExpire}}到期</text>
+  </view>
+
+  <!-- 位置天气信息 -->
+  <view class="location-bar" bindtap="refreshLocation">
+    <view class="location-left">
+      <text class="location-icon">📍</text>
+      <text class="location-text">{{location}}</text>
+    </view>
+    <view class="divider"></view>
+    <view class="weather-right">
+      <text class="weather-icon">{{weatherIcon}}</text>
+      <text class="weather-text">{{weather}} {{temperature}}</text>
+    </view>
+  </view>
+
+  <!-- 主标题区域 -->
+  <view class="hero-section">
+    <text class="hero-title">
+      <text class="title-white">绣绣</text>
+      <text class="title-gradient">AI</text>
+    </text>
+    <text class="hero-subtitle">智能出行助手</text>
+  </view>
+
+  <!-- 底部占位，防止内容被输入框遮挡 -->
+  <view class="bottom-placeholder"></view>
+</view>
+
+<!-- 底部功能区 -->
+<view class="bottom-bar">
+  <view class="action-buttons">
+    <view class="action-btn action-btn-outline" bindtap="newChat">
+      <text class="action-icon">↻</text>
+      <text class="action-text">新对话</text>
+    </view>
+    <view class="action-btn action-btn-purple" bindtap="makeCard">
+      <text class="action-icon">📷</text>
+      <text class="action-text">制作收集卡</text>
+    </view>
+    <view class="action-btn action-btn-outline" bindtap="aiPlan">
+      <text class="action-icon">📍</text>
+      <text class="action-text">AI规划</text>
+    </view>
+    <view class="action-btn action-btn-outline" bindtap="openMenu">
+      <text class="action-icon">☰</text>
+    </view>
+  </view>
+  <view class="input-area">
+    <input class="message-input" placeholder="输入消息..." placeholder-class="input-placeholder" value="{{inputValue}}" bindinput="onInput" confirm-type="send" bindconfirm="sendMessage"/>
+    <view class="send-btn {{inputValue ? 'send-btn-active' : ''}}" bindtap="sendMessage">
+      <text class="send-icon">➤</text>
+    </view>
+  </view>
+</view>

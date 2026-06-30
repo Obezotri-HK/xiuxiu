@@ -1,0 +1,15 @@
+node_modules/
+.DS_Store
+*.log
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.npmrc
+.yarnrc
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+miniprogram_npm/
