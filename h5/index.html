@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>绣绣AI - 智能出行助手</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 登录页 -->
+    <div id="page-login" class="page active">
+      <div class="login-container">
+        <div class="login-header">
+          <div class="app-icon">🤖</div>
+          <h1 class="app-name">绣绣AI</h1>
+          <p class="app-slogan">智能出行助手</p>
+        </div>
+
+        <div class="login-tabs">
+          <div class="tab active" data-tab="phone">手机号登录</div>
+          <div class="tab" data-tab="wechat">微信授权</div>
+        </div>
+
+        <!-- 手机号登录 -->
+        <div class="login-form phone-form active">
+          <div class="form-item">
+            <span class="form-prefix">+86</span>
+            <input type="tel" id="phoneInput" placeholder="请输入手机号" maxlength="11">
+          </div>
+          <div class="form-item">
+            <input type="text" id="codeInput" placeholder="请输入验证码" maxlength="6">
+            <button class="code-btn" id="sendCodeBtn">获取验证码</button>
+          </div>
+          <button class="btn btn-primary" id="phoneLoginBtn">登录</button>
+        </div>
+
+        <!-- 微信授权 -->
+        <div class="login-form wechat-form">
+          <div class="wechat-tip">
+            <span>💡</span>
+            <span>使用微信手机号快速登录，安全便捷</span>
+          </div>
+          <button class="btn btn-wechat" id="wechatLoginBtn">
+            <span class="btn-icon">💬</span>
+            <span class="btn-text">微信手机号授权登录</span>
+          </button>
+        </div>
+
+        <div class="other-login">
+          <div class="divider"><span>其他登录方式</span></div>
+          <button class="btn btn-guest" id="guestLoginBtn">
+            <span class="btn-icon">👤</span>
+            <span class="btn-text">游客体验（剩余50次）</span>
+          </button>
+        </div>
+
+        <div class="agreement">
+          <label class="checkbox-label">
+            <input type="checkbox" id="agreeCheck">
+            <span class="checkbox-custom"></span>
+            <span class="agreement-text">
+              我已阅读并同意
+              <a href="#" class="link" data-page="agreement">《用户协议》</a>
+              和
+              <a href="#" class="link" data-page="privacy">《隐私政策》</a>
+            </span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 对话页 -->
+    <div id="page-chat" class="page">
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="header-left">
+            <span class="header-title">绣绣AI</span>
+          </div>
+          <div class="header-right">
+            <div class="header-btn" id="newChatBtn">
+              <span class="header-icon">+</span>
+              <span class="header-text">新对话</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <!-- 空状态 -->
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">🤖</div>
+            <div class="empty-title">你好，我是绣绣AI</div>
+            <div class="empty-desc">你的智能出行助手，可以帮你规划桂林旅游路线、推荐景点、解答问题等</div>
+            <div class="quick-prompts">
+              <div class="prompt-item" data-prompt="推荐一条桂林三日游路线">
+                <span class="prompt-text">推荐一条桂林三日游路线</span>
+              </div>
+              <div class="prompt-item" data-prompt="阳朔有什么好玩的景点？">
+                <span class="prompt-text">阳朔有什么好玩的景点？</span>
+              </div>
+              <div class="prompt-item" data-prompt="桂林美食推荐">
+                <span class="prompt-text">桂林美食推荐</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 消息列表 -->
+          <div class="message-list" id="messageList"></div>
+        </div>
+
+        <div class="input-area">
+          <div class="input-wrapper">
+            <textarea 
+              id="inputField"
+              class="input-field" 
+              placeholder="输入消息..."
+              maxlength="2000"
+              rows="1"
+            ></textarea>
+            <div class="input-actions">
+              <span class="char-count" id="charCount">0/2000</span>
+              <div class="send-btn" id="sendBtn">
+                <span class="send-icon">↑</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 用户协议页 -->
+    <div id="page-agreement" class="page">
+      <div class="doc-page">
+        <div class="doc-header">
+          <div class="back-btn" id="backFromAgreement">←</div>
+          <div class="doc-title">用户协议</div>
+        </div>
+        <div class="doc-content">
+          <h2>一、服务条款</h2>
+          <p>欢迎使用绣绣AI！在使用本服务之前，请仔细阅读以下条款。使用本服务即表示您同意接受这些条款。</p>
+          
+          <h2>二、用户账号</h2>
+          <p>1. 用户应妥善保管自己的账号和密码，对账号下的所有行为和活动负责。</p>
+          <p>2. 用户发现账号异常使用情况，应立即通知本平台。</p>
+          <p>3. 用户不得以任何形式将账号转让、出借给他人使用。</p>
+          
+          <h2>三、服务内容</h2>
+          <p>绣绣AI为用户提供智能旅游咨询服务，包括但不限于：</p>
+          <p>1. 景点推荐和旅游攻略</p>
+          <p>2. 行程规划和路线建议</p>
+          <p>3. 美食推荐和当地文化介绍</p>
+          <p>4. 其他与旅游相关的咨询服务</p>
+          
+          <h2>四、使用限制</h2>
+          <p>用户在使用本服务时，不得从事以下行为：</p>
+          <p>1. 发布违反国家法律法规的内容</p>
+          <p>2. 发布虚假、骚扰、色情、暴力等不良信息</p>
+          <p>3. 侵犯他人合法权益</p>
+          <p>4. 干扰服务正常运行</p>
+          <p>5. 未经授权访问他人账号或数据</p>
+          
+          <h2>五、知识产权</h2>
+          <p>本服务的所有内容，包括但不限于文字、图片、音视频、软件等，均受知识产权法律法规保护。</p>
+          
+          <h2>六、免责声明</h2>
+          <p>1. AI生成的内容仅供参考，不构成专业建议。</p>
+          <p>2. 因不可抗力或非本平台原因导致的服务中断，本平台不承担责任。</p>
+          <p>3. 用户因使用本服务产生的任何损失，本平台在法律允许范围内不承担责任。</p>
+          
+          <h2>七、联系我们</h2>
+          <p>如有任何问题，请通过小程序内客服渠道联系我们。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 隐私政策页 -->
+    <div id="page-privacy" class="page">
+      <div class="doc-page">
+        <div class="doc-header">
+          <div class="back-btn" id="backFromPrivacy">←</div>
+          <div class="doc-title">隐私政策</div>
+        </div>
+        <div class="doc-content">
+          <h2>一、信息收集</h2>
+          <p>我们会收集以下类型的信息：</p>
+          <p>1. 微信账号信息：当您使用微信授权登录时，我们会获取您的微信头像、昵称等基础信息。</p>
+          <p>2. 手机号信息：当您使用手机号登录时，我们会收集您的手机号用于身份验证。</p>
+          <p>3. 位置信息：当您使用定位相关功能时，我们会获取您的地理位置信息。</p>
+          <p>4. 使用数据：我们会收集您的使用记录，包括对话历史、操作行为等，用于改进服务质量。</p>
+          
+          <h2>二、信息使用</h2>
+          <p>我们收集的信息将用于：</p>
+          <p>1. 提供、维护和改进我们的服务</p>
+          <p>2. 用户身份验证和账号管理</p>
+          <p>3. 个性化推荐和服务优化</p>
+          <p>4. 安全保障和风险控制</p>
+          <p>5. 经您同意的其他用途</p>
+          
+          <h2>三、信息保护</h2>
+          <p>我们采用业界标准的安全技术和管理措施来保护您的个人信息安全，包括数据加密、访问控制、安全审计等。</p>
+          
+          <h2>四、信息共享</h2>
+          <p>除以下情况外，我们不会向第三方共享您的个人信息：</p>
+          <p>1. 事先获得您的明确同意</p>
+          <p>2. 法律法规要求或司法机关依法要求</p>
+          <p>3. 为保护用户或公众的合法权益所必需</p>
+          
+          <h2>五、用户权利</h2>
+          <p>您对自己的个人信息享有以下权利：</p>
+          <p>1. 访问权：您可以访问您的个人信息</p>
+          <p>2. 更正权：您可以更正不准确的信息</p>
+          <p>3. 删除权：您可以要求删除您的个人信息</p>
+          <p>4. 撤回同意权：您可以撤回之前的授权同意</p>
+          
+          <h2>六、Cookie与追踪技术</h2>
+          <p>我们使用Cookie等技术来改善用户体验，您可以在设备设置中管理或清除Cookie。</p>
+          
+          <h2>七、未成年人保护</h2>
+          <p>我们非常重视未成年人的隐私保护。如果您是未成年人，请在监护人的指导下使用本服务。</p>
+          
+          <h2>八、政策更新</h2>
+          <p>我们可能会适时更新本隐私政策，更新后的政策将在本页面发布。请您定期查阅最新政策。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
