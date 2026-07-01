@@ -1,191 +1,137 @@
-# 绣绣AI - 微信小程序
+# 绣绣AI - 桂林旅游 AI 微信小程序
 
-桂林旅游智能出行助手，基于 AI 的旅游咨询小程序。
+绣绣AI是一款面向桂林旅游场景的微信小程序，首页默认进入 AI 对话界面，并提供商城与个人中心两个辅助页面，方便做旅游咨询、商品展示和账号信息管理。
 
-## 项目介绍
+## 当前版本功能
 
-绣绣AI是一款专注于桂林旅游的智能对话小程序，为用户提供景点推荐、路线规划、美食攻略等旅游咨询服务。
+### 对话页
 
-## 功能特性
+- 首页即对话页，整体交互参考千问/豆包风格
+- 支持快捷提示词，点击后可直接发起提问
+- 支持新对话
+- 支持文字输入与语音输入模式切换
+- 支持录音入口，已预留语音识别接口
+- 支持对话自动滚到底部
+- 支持接入自有 AI 后端接口
 
-### 已完成功能
+### 商城页
 
-- **登录系统**
-  - 手机号 + 验证码登录
-  - 微信授权登录
-  - 游客体验（50次对话额度）
-  - 用户协议 / 隐私政策
+- 提供桂林旅游商品展示页
+- 包含旅游产品、景点、民宿、美食等示例数据
+- 支持作为后续商城或内容推荐页面扩展
 
-- **AI 对话**
-  - 智能对话界面（类千问风格）
-  - 快捷提示词
-  - 新对话功能
-  - 加载动画效果
-  - 自动滚动到底部
+### 我的页
 
-- **位置与天气**
-  - 实时定位（微信定位API）
-  - 逆地理编码（腾讯地图）
-  - 实时天气（和风天气）
-  - 点击刷新
+- 提供个人中心页面
+- 展示用户信息、订单、收藏、浏览历史、联系客服等入口
 
-- **界面主题**
-  - 桂林山水青绿主题
-  - 响应式设计
-  - 适配 iOS / Android
+### 底部导航
+
+- 使用自定义 `tabBar`
+- 当前包含 `对话`、`商城`、`我的` 三个导航项
+- 可自定义高度、字体和选中态样式
 
 ## 技术栈
 
-- **框架**: 微信小程序原生框架
-- **语言**: JavaScript
-- **样式**: WXSS
-- **后端接口**: RESTful API (待接入)
+- 框架：微信小程序原生框架
+- 语言：JavaScript
+- 视图：WXML
+- 样式：WXSS
+- 数据接口：REST API
 
-## 项目结构
+## 目录结构
 
-```
-├── app.js                      # 小程序入口
-├── app.json                    # 全局配置
-├── app.wxss                    # 全局样式
-├── sitemap.json                # 站点地图
-├── project.config.json         # 项目配置
-├── API_DOC.md                  # 后端接口文档
+```text
+├── app.js
+├── app.json
+├── app.wxss
+├── API_DOC.md
+├── README.md
+├── sitemap.json
+├── custom-tab-bar/
+│   ├── index.js
+│   ├── index.json
+│   ├── index.wxml
+│   └── index.wxss
 └── pages/
-    ├── login/                  # 登录页
-    │   ├── login.js
-    │   ├── login.json
-    │   ├── login.wxml
-    │   └── login.wxss
-    ├── index/                  # 首页/对话页
-    │   ├── index.js
-    │   ├── index.json
-    │   ├── index.wxml
-    │   └── index.wxss
-    ├── agreement/              # 用户协议
-    │   ├── agreement.js
-    │   ├── agreement.json
-    │   ├── agreement.wxml
-    │   └── agreement.wxss
-    └── privacy/                # 隐私政策
-        ├── privacy.js
-        ├── privacy.json
-        ├── privacy.wxml
-        └── privacy.wxss
+    ├── index/          # 对话首页
+    ├── mall/           # 商城页
+    ├── profile/        # 我的页
+    ├── login/          # 登录页
+    ├── agreement/      # 用户协议
+    └── privacy/        # 隐私政策
 ```
 
-## 快速开始
+## 本地开发
 
 ### 环境要求
 
-- 微信开发者工具（最新版）
-- 微信小程序 AppID
+- 微信开发者工具
+- 可用的小程序 AppID
 
-### 开发步骤
+### 启动方式
 
-1. **导入项目**
-   - 打开微信开发者工具
-   - 导入项目，选择本目录
-   - 填写你的小程序 AppID
+1. 使用微信开发者工具导入项目目录
+2. 在开发者工具中配置小程序 AppID
+3. 如开发阶段需要，可在开发者工具中关闭合法域名校验
 
-2. **配置后端 API**
-   
-   打开 `pages/index/index.js`，修改顶部配置：
-   ```javascript
-   const API_BASE_URL = 'https://your-api-domain.com/api'  // 你的后端地址
-   const API_KEY = 'your-api-key'  // API密钥（可选）
-   ```
+## AI 接口接入
 
-3. **配置第三方服务（可选）**
-   
-   - **腾讯地图**（逆地理编码）：https://lbs.qq.com/
-   - **和风天气**（实时天气）：https://dev.qweather.com/
-   
-   在 `pages/index/index.js` 中配置：
-   ```javascript
-   const WEATHER_API_KEY = '你的和风天气Key'
-   const QQ_MAP_KEY = '你的腾讯地图Key'
-   ```
-
-4. **开发者工具设置**
-   - 详情 → 本地设置 → 勾选「不校验合法域名、web-view（业务域名）、TLS 版本以及 HTTPS 证书」（开发阶段）
-
-## 后端接口
-
-详细接口文档请参考 [API_DOC.md](./API_DOC.md)
-
-### 主要接口
-
-| 接口 | 方法 | 说明 |
-|------|------|------|
-| `/api/chat` | POST | AI 对话接口 |
-
-### 请求示例
+对话页的接口配置位于 [index.js](file:///c:/Users/Administrator/Desktop/xiuxiu/pages/index/index.js) 顶部：
 
 ```javascript
-// 请求
+const API_BASE_URL = 'https://your-api-domain.com/api'
+const API_KEY = 'your-api-key'
+```
+
+接入时请将其替换为自己的后端地址和鉴权信息。
+
+### 当前约定
+
+- 聊天接口地址：`POST /chat`
+- 请求字段示例：
+
+```json
 {
   "message": "推荐一条桂林三日游路线",
   "conversation_id": "conv_xxx",
-  "user_id": "138****8888"
-}
-
-// 响应
-{
-  "code": 0,
-  "message": "success",
-  "reply": "AI回复内容...",
-  "conversation_id": "conv_xxx"
+  "user_id": "guest"
 }
 ```
 
-## 发布上线
+- 返回字段兼容：
+  - `reply`
+  - `content`
+  - `message`
 
-### 上线前检查
+## 语音能力说明
 
-- [ ] 后端 API 已部署
-- [ ] 在微信公众平台配置 request 合法域名
-- [ ] 小程序类目选择正确
-- [ ] 用户协议和隐私政策已完善
-- [ ] 已提交隐私保护指引
+- 当前小程序已接入微信录音管理器
+- 录音入口已完成
+- 语音转文字逻辑仍需接入真实语音识别服务
+- 可在 [voiceToText](file:///c:/Users/Administrator/Desktop/xiuxiu/pages/index/index.js#L126-L140) 中替换为你们自己的语音识别接口
 
-### 发布流程
+## 开发说明
 
-1. 微信开发者工具 → 上传
-2. 填写版本号和项目备注
-3. 登录微信公众平台 → 版本管理
-4. 提交审核
-5. 审核通过后发布
+### 域名配置
 
-## 数据存储
+如果在微信开发者工具中调用接口出现合法域名报错，请：
 
-所有用户数据存储在本地（`wx.setStorageSync`）：
+1. 在微信公众平台配置 `request` 合法域名
+2. 在开发工具中刷新域名配置
+3. 开发调试阶段可临时关闭合法域名校验
 
-| 键名 | 说明 |
-|------|------|
-| `userInfo` | 用户信息对象 |
-| `isLoggedIn` | 是否正式登录 |
-| `isGuest` | 是否游客模式 |
-| `token` | 登录凭证 |
-| `remainingCount` | 剩余对话次数 |
-| `conversationId` | 当前对话ID |
+### 私有配置文件
 
-## 主题配色
+`project.private.config.json` 属于本机开发配置，通常不建议提交到仓库。
 
-基于桂林山水设计的青绿主题：
+## 后续可扩展方向
 
-| 颜色 | 色值 | 用途 |
-|------|------|------|
-| 主色 | `#10B981` | 按钮、强调 |
-| 深主色 | `#059669` | 渐变终点 |
-| 背景 | `#F7F8FA` | 页面背景 |
-| 卡片 | `#FFFFFF` | 消息气泡 |
-| 文字主色 | `#1F2937` | 标题、正文 |
-| 文字副色 | `#6B7280` | 辅助文字 |
+- 接入真实旅游 AI 服务
+- 接入真实商品、订单和用户中心接口
+- 接入语音识别与语音播报
+- 增加景点详情、路线卡片、订单页等业务页面
 
 ## 许可证
 
-本项目仅供学习和内部使用。
-
-## 联系方式
-
-如有问题，请在小程序内联系客服。
+本项目仅供学习、演示和内部开发使用。
