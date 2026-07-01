@@ -1,14 +1,9 @@
 <view class="chat-container">
-  <!-- 顶部区域 -->
-  <view class="chat-header">
-    <view class="header-left">
-      <text class="header-title">绣绣AI</text>
-    </view>
-    <view class="header-right">
-      <view class="header-btn" bindtap="newChat">
-        <text class="header-icon">+</text>
-        <text class="header-text">新对话</text>
-      </view>
+  <!-- 顶部按钮 -->
+  <view class="chat-top-bar">
+    <view class="header-btn" bindtap="newChat">
+      <text class="header-icon">+</text>
+      <text class="header-text">新对话</text>
     </view>
   </view>
 
@@ -16,91 +11,168 @@
   <scroll-view 
     class="chat-messages" 
     scroll-y 
+    scroll-top="{{scrollTop}}"
     scroll-into-view="{{scrollToView}}"
     scroll-with-animation
     enhanced
     bounces="{{false}}"
   >
-    <!-- 空状态提示 -->
-    <view class="empty-state" wx:if="{{messageList.length === 0 && !isLoading}}">
-      <view class="empty-icon">🤖</view>
-      <view class="empty-title">你好，我是绣绣AI</view>
-      <view class="empty-desc">你的智能出行助手，可以帮你规划桂林旅游路线、推荐景点、解答问题等</view>
-      <view class="quick-prompts">
-        <view class="prompt-item" bindtap="sendPrompt" data-prompt="推荐一条桂林三日游路线">
-          <text class="prompt-text">推荐一条桂林三日游路线</text>
-        </view>
-        <view class="prompt-item" bindtap="sendPrompt" data-prompt="阳朔有什么好玩的景点？">
-          <text class="prompt-text">阳朔有什么好玩的景点？</text>
-        </view>
-        <view class="prompt-item" bindtap="sendPrompt" data-prompt="桂林美食推荐">
-          <text class="prompt-text">桂林美食推荐</text>
-        </view>
-      </view>
-    </view>
+    <view class="chat-content {{messageList.length || isLoading ? 'has-messages' : ''}}">
+      <!-- 空状态提示 -->
+      <view class="empty-state" wx:if="{{messageList.length === 0 && !isLoading}}">
+        <view class="empty-icon">🏞️</view>
+        <view class="empty-title">你好，我是绣绣AI</view>
+        <view class="empty-desc">你的专属桂林旅游助手，带你探索山水甲天下的桂林</view>
 
-    <!-- 消息列表 -->
-    <view class="message-list">
-      <view 
-        class="message-wrapper {{item.role}}"
-        wx:for="{{messageList}}" 
-        wx:key="id"
-        id="msg-{{item.id}}"
-      >
-        <!-- 头像 -->
-        <view class="message-avatar">
-          <text wx:if="{{item.role === 'user'}}">👤</text>
-          <text wx:else>🤖</text>
-        </view>
-        
-        <!-- 消息内容 -->
-        <view class="message-content">
-          <view class="message-bubble {{item.role}}">
-            <text class="message-text">{{item.content}}</text>
+        <!-- 快捷提示词 -->
+        <view class="quick-prompts">
+          <view class="prompt-item" bindtap="sendPrompt" data-prompt="漓江游船哪个段风景最好？">
+            <text class="prompt-text">漓江游船哪个段最好？</text>
+          </view>
+          <view class="prompt-item" bindtap="sendPrompt" data-prompt="阳朔三天两晚怎么玩？">
+            <text class="prompt-text">阳朔三日游攻略</text>
+          </view>
+          <view class="prompt-item" bindtap="sendPrompt" data-prompt="桂林米粉哪家最正宗？">
+            <text class="prompt-text">正宗桂林米粉</text>
+          </view>
+          <view class="prompt-item" bindtap="sendPrompt" data-prompt="龙脊梯田最佳旅游时间">
+            <text class="prompt-text">龙脊梯田攻略</text>
+          </view>
+          <view class="prompt-item" bindtap="sendPrompt" data-prompt="桂林夜景哪里好看？">
+            <text class="prompt-text">桂林夜景推荐</text>
+          </view>
+          <view class="prompt-item" bindtap="sendPrompt" data-prompt="桂林特色民宿推荐">
+            <text class="prompt-text">特色民宿推荐</text>
           </view>
         </view>
       </view>
 
-      <!-- 加载状态 -->
-      <view class="message-wrapper ai" wx:if="{{isLoading}}" id="msg-loading">
-        <view class="message-avatar">
-          <text>🤖</text>
-        </view>
-        <view class="message-content">
-          <view class="message-bubble ai loading">
-            <view class="loading-dots">
-              <view class="dot"></view>
-              <view class="dot"></view>
-              <view class="dot"></view>
+      <!-- 消息列表 -->
+      <view class="message-list" wx:else>
+        <view 
+          class="message-wrapper {{item.role}}"
+          wx:for="{{messageList}}" 
+          wx:key="id"
+          id="msg-{{item.id}}"
+        >
+          <!-- 头像 -->
+          <view class="message-avatar">
+            <text wx:if="{{item.role === 'user'}}">👤</text>
+            <text wx:else>🤖</text>
+          </view>
+          
+          <!-- 消息内容 -->
+          <view class="message-content">
+            <view class="message-bubble {{item.role}}">
+              <text class="message-text">{{item.content}}</text>
             </view>
-            <text class="loading-text">思考中...</text>
           </view>
         </view>
+
+        <!-- 加载状态 -->
+        <view class="message-wrapper ai" wx:if="{{isLoading}}" id="msg-loading">
+          <view class="message-avatar">
+            <text>🤖</text>
+          </view>
+          <view class="message-content">
+            <view class="message-bubble ai loading">
+              <view class="loading-dots">
+                <view class="dot"></view>
+                <view class="dot"></view>
+                <view class="dot"></view>
+              </view>
+              <text class="loading-text">思考中...</text>
+            </view>
+          </view>
+        </view>
+
+        <view id="chat-bottom-anchor" class="chat-bottom-anchor"></view>
       </view>
     </view>
   </scroll-view>
 
+  <!-- 快捷功能入口 -->
+  <view class="bottom-actions">
+    <view class="bottom-action-item" bindtap="sendPrompt" data-prompt="推荐必游景点">
+      <text class="bottom-action-text">景点推荐</text>
+    </view>
+    <view class="bottom-action-item" bindtap="sendPrompt" data-prompt="规划旅游路线">
+      <text class="bottom-action-text">路线规划</text>
+    </view>
+    <view class="bottom-action-item" bindtap="sendPrompt" data-prompt="推荐特色美食">
+      <text class="bottom-action-text">美食攻略</text>
+    </view>
+    <view class="bottom-action-item" bindtap="sendPrompt" data-prompt="查询天气">
+      <text class="bottom-action-text">天气查询</text>
+    </view>
+  </view>
+
+  <!-- 录音中遮罩 -->
+  <view class="recording-mask {{isCancel ? 'cancel' : ''}}" wx:if="{{isRecording}}" catchtouchstart="stopRecording">
+    <view class="recording-content">
+      <view class="wave-container" wx:if="{{!isCancel}}">
+        <view class="wave-bar"></view>
+        <view class="wave-bar"></view>
+        <view class="wave-bar"></view>
+        <view class="wave-bar"></view>
+        <view class="wave-bar"></view>
+      </view>
+      <view class="cancel-icon" wx:else>✕</view>
+      <text class="recording-text">{{isCancel ? '松开取消' : '正在聆听，松开发送'}}</text>
+      <text class="recording-hint">{{isCancel ? '' : '上滑取消'}}</text>
+    </view>
+  </view>
+
   <!-- 底部输入区域 -->
   <view class="input-area">
-    <view class="input-wrapper">
-      <textarea 
-        class="input-field" 
-        placeholder="输入消息..." 
-        placeholder-class="input-placeholder"
-        value="{{inputValue}}"
-        bindinput="onInput"
-        bindconfirm="sendMessage"
-        confirm-type="send"
-        maxlength="{{2000}}"
-        auto-height
-        show-confirm-bar="{{false}}"
-        adjust-position="{{false}}"
-        cursor-spacing="{{20}}"
-      />
-      <view class="input-actions">
-        <text class="char-count">{{inputValue.length}}/2000</text>
-        <view class="send-btn {{inputValue.trim() ? 'active' : ''}}" bindtap="sendMessage">
-          <text class="send-icon">↑</text>
+    <!-- 语音模式 -->
+    <view class="voice-mode" wx:if="{{voiceMode && !inputValue}}">
+      <!-- 切换到文字模式 -->
+      <view class="switch-mode-btn" bindtap="toggleVoiceMode">
+        <text class="switch-icon">⌨️</text>
+      </view>
+      
+      <view 
+        class="big-voice-btn {{isRecording ? 'recording' : ''}}" 
+        catchtouchstart="startRecording"
+        catchtouchend="stopRecording"
+        catchtouchmove="onTouchMove"
+      >
+        <text class="big-voice-icon">{{isRecording ? '🔴' : '🎤'}}</text>
+        <text class="big-voice-text">{{isRecording ? '松开 结束' : '按住 说话'}}</text>
+      </view>
+    </view>
+    
+    <!-- 文字模式 -->
+    <view class="text-mode" wx:else>
+      <view class="input-wrapper">
+        <!-- 切换到语音模式 -->
+        <view class="switch-mode-btn" bindtap="toggleVoiceMode">
+          <text class="switch-icon">🎤</text>
+        </view>
+        
+        <!-- 输入框独立区域 -->
+        <view class="input-box">
+          <textarea 
+            class="input-field" 
+            placeholder="发消息..." 
+            placeholder-class="input-placeholder"
+            value="{{inputValue}}"
+            bindinput="onInput"
+            bindconfirm="sendMessage"
+            confirm-type="send"
+            maxlength="{{2000}}"
+            auto-height
+            show-confirm-bar="{{false}}"
+            adjust-position="{{false}}"
+            cursor-spacing="{{20}}"
+          />
+          <view class="input-actions">
+            <text class="char-count" wx:if="{{inputValue}}">{{inputValue.length}}/2000</text>
+            <view class="send-btn {{inputValue.trim() ? 'active' : ''}}" bindtap="sendMessage">
+              <text class="send-icon">↑</text>
+            </view>
+          </view>
         </view>
       </view>
     </view>

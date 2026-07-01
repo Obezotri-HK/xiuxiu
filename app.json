@@ -1,7 +1,9 @@
 {
   "pages": [
-    "pages/login/login",
     "pages/index/index",
+    "pages/mall/mall",
+    "pages/profile/profile",
+    "pages/login/login",
     "pages/agreement/agreement",
     "pages/privacy/privacy"
   ],
@@ -11,6 +13,27 @@
     "navigationBarTitleText": "绣绣AI",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#F0F7F4"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#6B7280",
+    "selectedColor": "#10B981",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "对话"
+      },
+      {
+        "pagePath": "pages/mall/mall",
+        "text": "商城"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
   },
   "permission": {
     "scope.userLocation": {

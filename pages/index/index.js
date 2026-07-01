@@ -12,12 +12,131 @@ Page({
     messageList: [],
     isLoading: false,
     scrollToView: '',
+    scrollTop: 0,
     msgIdCounter: 0,
-    conversationId: ''
+    conversationId: '',
+    isRecording: false,
+    isCancel: false,
+    recorderManager: null,
+    startY: 0,
+    voiceMode: false // 默认文字模式
   },
 
   onLoad() {
     this.initConversation()
+    this.initRecorder()
+  },
+
+  onShow() {
+    this.updateTabBar(0)
+    if (this.data.messageList.length || this.data.isLoading) {
+      setTimeout(() => {
+        this.scrollToBottom()
+      }, 120)
+    }
+  },
+
+  onUnload() {
+    if (this.data.recorderManager) {
+      this.data.recorderManager.stop()
+    }
+  },
+
+  // 初始化录音管理器
+  initRecorder() {
+    const recorderManager = wx.getRecorderManager()
+    
+    recorderManager.onStart(() => {
+      console.log('录音开始')
+    })
+
+    recorderManager.onStop((res) => {
+      console.log('录音结束', res)
+      this.setData({ isRecording: false })
+      
+      if (!this.data.isCancel) {
+        this.voiceToText(res.tempFilePath)
+      } else {
+        this.setData({ isCancel: false })
+      }
+    })
+
+    recorderManager.onError((err) => {
+      console.error('录音错误', err)
+      this.setData({ isRecording: false })
+      wx.showToast({ title: '录音失败', icon: 'none' })
+    })
+
+    this.setData({ recorderManager })
+  },
+
+  // 开始录音（按住）
+  startRecording(e) {
+    this.setData({ 
+      startY: e.touches[0].clientY,
+      isCancel: false 
+    })
+    
+    wx.authorize({
+      scope: 'scope.record',
+      success: () => {
+        this.data.recorderManager.start({
+          duration: 60000,
+          sampleRate: 16000,
+          numberOfChannels: 1,
+          encodeBitRate: 48000,
+          format: 'mp3'
+        })
+        this.setData({ isRecording: true })
+      },
+      fail: () => {
+        wx.showToast({ title: '需要录音权限', icon: 'none' })
+      }
+    })
+  },
+
+  // 停止录音（松开）
+  stopRecording() {
+    if (this.data.isRecording) {
+      this.data.recorderManager.stop()
+    }
+  },
+
+  // 滑动取消
+  onTouchMove(e) {
+    if (!this.data.isRecording) return
+    
+    const moveY = e.touches[0].clientY
+    const diff = this.data.startY - moveY
+    
+    if (diff > 100) {
+      this.setData({ isCancel: true })
+    } else {
+      this.setData({ isCancel: false })
+    }
+  },
+
+  // 切换语音/文字模式
+  toggleVoiceMode() {
+    this.setData({
+      voiceMode: !this.data.voiceMode
+    })
+  },
+
+  // 语音转文字（请接入您的语音识别API）
+  voiceToText(filePath) {
+    wx.showLoading({ title: '识别中...' })
+    
+    // ==========================================
+    // TODO: 在这里接入您的语音识别API
+    // filePath 是录音文件的临时路径
+    // ==========================================
+    
+    // 临时代码：不做任何处理，直接隐藏loading
+    setTimeout(() => {
+      wx.hideLoading()
+      wx.showToast({ title: '请先接入语音识别API', icon: 'none' })
+    }, 500)
   },
 
   // 初始化对话ID
@@ -69,7 +188,7 @@ Page({
       isLoading: true
     })
 
-    this.scrollToBottom('msg-' + userMsgId)
+    this.scrollToBottom()
 
     // 调用后端API
     this.callAIApi(content)
@@ -127,31 +246,52 @@ Page({
       isLoading: false
     })
 
-    this.scrollToBottom('msg-' + aiMsgId)
+    this.scrollToBottom()
   },
 
-  // 模拟AI回复（后端未配置时使用）
+  // 模拟AI回复（用于测试界面）
   mockAIReply(userMessage) {
     setTimeout(() => {
-      const replies = [
-        `好的，我来帮你解答关于"${userMessage}"的问题。桂林是世界著名的风景游览城市，有着举世无双的喀斯特地貌，山青、水秀、洞奇、石美堪称桂林四绝。`,
-        `感谢你的提问！关于"${userMessage}"，我可以给你一些建议。桂林的最佳旅游季节是每年的4-10月，这个时候气候宜人，风景最美。`,
-        `收到！关于"${userMessage}"，我推荐你去这些地方：漓江（船游百里画廊）、象鼻山（桂林城徽）、阳朔西街（洋人街）、遇龙河（竹筏漂流）。`,
-        `你好！${userMessage}是个很棒的话题。在桂林旅游，除了欣赏美景，还可以品尝地道的桂林米粉、阳朔啤酒鱼、荔浦芋扣肉等美食。`,
-        `我来帮你分析一下"${userMessage}"。桂林景点众多，建议你根据天数来规划：1-2天游市区，3-5天深度游阳朔和周边。`
-      ]
-      const randomReply = replies[Math.floor(Math.random() * replies.length)]
-      this.addAIMessage(randomReply)
-    }, 1500 + Math.random() * 1500)
+      let reply = ''
+      
+      // 简单的关键词回复
+      if (userMessage.includes('桂林')) {
+        reply = '桂林是世界著名的风景游览城市，有着举世无双的喀斯特地貌。您想了解桂林的景点、美食还是住宿呢？'
+      } else if (userMessage.includes('阳朔')) {
+        reply = '阳朔是桂林最著名的旅游县，有漓江、遇龙河、西街等著名景点。您是打算去阳朔旅游吗？'
+      } else if (userMessage.includes('米粉')) {
+        reply = '桂林米粉是桂林最有名的特色美食，以其独特的风味和口感闻名。推荐您去尝一下正宗的桂林米粉！'
+      } else if (userMessage.includes('天气')) {
+        reply = '桂林属于亚热带季风气候，四季分明。您可以告诉我您想了解哪个季节的天气情况？'
+      } else if (userMessage.includes('景点') || userMessage.includes('推荐')) {
+        reply = '桂林必游景点推荐：1. 漓江风景区 2. 象鼻山 3. 阳朔西街 4. 遇龙河 5. 龙脊梯田。您对哪个最感兴趣？'
+      } else if (userMessage.includes('路线') || userMessage.includes('规划')) {
+        reply = '桂林经典路线推荐：Day1 象鼻山+两江四湖；Day2 漓江游船+阳朔西街；Day3 遇龙河竹筏+银子岩。需要更详细的规划吗？'
+      } else if (userMessage.includes('美食')) {
+        reply = '桂林美食推荐：桂林米粉、阳朔啤酒鱼、荔浦芋扣肉、田螺酿、恭城油茶。您想了解哪一个？'
+      } else {
+        reply = '收到！我是您的桂林旅游助手。关于桂林旅游，您有什么想了解的？比如景点推荐、美食攻略、路线规划等都可以问我哦！'
+      }
+      
+      this.addAIMessage(reply)
+    }, 800 + Math.random() * 500)
   },
 
   // 滚动到底部
-  scrollToBottom(id) {
-    setTimeout(() => {
-      this.setData({
-        scrollToView: id || 'msg-loading'
-      })
-    }, 100)
+  scrollToBottom() {
+    const nextScrollTop = this.data.scrollTop + 100000
+
+    this.setData({
+      scrollToView: '',
+      scrollTop: nextScrollTop
+    }, () => {
+      setTimeout(() => {
+        this.setData({
+          scrollToView: 'chat-bottom-anchor',
+          scrollTop: nextScrollTop + 1
+        })
+      }, 50)
+    })
   },
 
   // 新建对话
@@ -177,5 +317,14 @@ Page({
         }
       }
     })
+  },
+
+  updateTabBar(selected) {
+    if (typeof this.getTabBar !== 'function') return
+
+    const tabBar = this.getTabBar()
+    if (tabBar && typeof tabBar.setData === 'function') {
+      tabBar.setData({ selected })
+    }
   }
 })
