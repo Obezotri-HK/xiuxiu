@@ -63,7 +63,7 @@
 
     <view class="btn btn-guest" bindtap="guestLogin">
       <text class="btn-icon">👤</text>
-      <text class="btn-text">游客体验（剩余{{remainingCount}}次）</text>
+      <text class="btn-text">游客体验（剩余50次）</text>
     </view>
 
     <view class="agreement">

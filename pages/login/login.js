@@ -367,10 +367,11 @@ Page({
           
           wx.setStorageSync('userInfo', guestInfo)
           wx.setStorageSync('isGuest', true)
-          wx.setStorageSync('remainingCount', this.data.remainingCount)
+          wx.setStorageSync('remainingCount', 50)
 
           app.globalData.userInfo = guestInfo
           app.globalData.isGuest = true
+          app.globalData.remainingCount = 50
 
           wx.showToast({
             title: '登录成功',
