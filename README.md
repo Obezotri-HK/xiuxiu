@@ -1,35 +1,54 @@
-# 绣绣AI - 桂林旅游 AI 微信小程序
+# 绣绣AI
 
-绣绣AI是一款面向桂林旅游场景的微信小程序，首页默认进入 AI 对话界面，并提供商城与个人中心两个辅助页面，方便做旅游咨询、商品展示和账号信息管理。
+绣绣AI是一个面向桂林旅游场景的微信小程序，首页默认进入 AI 对话界面，围绕“旅游咨询 + 本地天气位置 + 旅游商品转化 + 用户中心”来组织整体体验。
 
-## 当前版本功能
+当前项目使用微信小程序原生框架开发，已经完成首页对话、商城、我的、商品详情、购物车、订单、收藏、浏览历史、登录、协议与隐私等页面的基础串联。
 
-### 对话页
+## 当前功能
 
-- 首页即对话页，整体交互参考千问/豆包风格
-- 支持快捷提示词，点击后可直接发起提问
-- 支持新对话
-- 支持文字输入与语音输入模式切换
-- 支持录音入口，已预留语音识别接口
-- 支持对话自动滚到底部
-- 支持接入自有 AI 后端接口
+### 首页对话
 
-### 商城页
+- 首页即聊天页，整体交互偏千问 / 豆包风格
+- 顶部展示当前位置和实时天气，支持点击刷新定位与天气
+- 支持快捷提示词和底部快捷提问按钮
+- 支持“新对话”重置会话
+- 支持文字输入与长按语音输入两种模式切换
+- 语音录音已接入微信录音管理器，语音转文字接口预留待接入
+- 聊天区域支持消息贴底显示，发送消息、AI 回复、切回页面时会自动滚动到底部
+- 已预留自有 AI 后端接入入口，未接入时使用本地模拟回复兜底
 
-- 提供桂林旅游商品展示页
-- 包含旅游产品、景点、民宿、美食等示例数据
-- 支持作为后续商城或内容推荐页面扩展
+### 商城模块
 
-### 我的页
+- 提供桂林旅游商品列表页，包含租车、游船、酒店、景区景点、装备等分类
+- 支持关键词搜索和分类筛选
+- 支持商品收藏状态切换
+- 支持商品详情页查看图片、规格、政策说明
+- 支持加入购物车和立即下单
+- 支持后端接口请求失败时回落到本地模拟数据
 
-- 提供个人中心页面
-- 展示用户信息、订单、收藏、浏览历史、联系客服等入口
+### 用户中心
+
+- 提供“我的”页面，展示登录状态、订单统计和常用功能入口
+- 支持跳转我的订单、我的收藏、浏览历史、设置、用户协议、隐私政策
+- 支持退出登录
+
+### 订单与购物车
+
+- 购物车页支持勾选、全选、增减数量、删除、清空和提交订单
+- 订单页支持按状态筛选
+- 已包含待付款、待使用、待评价、退款/售后等状态演示
+
+### 登录与辅助页面
+
+- 登录页支持手机号验证码登录、微信手机号授权登录、游客登录
+- 已提供协议页、隐私页、设置页
+- 已提供收藏页、浏览历史页
 
 ### 底部导航
 
-- 使用自定义 `tabBar`
-- 当前包含 `对话`、`商城`、`我的` 三个导航项
-- 可自定义高度、字体和选中态样式
+- 使用自定义 `tabBar`，不是微信原生 `tabBar`
+- 当前包含 `对话`、`商城`、`我的` 三个主入口
+- 已针对底部留白做过压缩，整体更贴近内容区
 
 ## 技术栈
 
@@ -37,9 +56,10 @@
 - 语言：JavaScript
 - 视图：WXML
 - 样式：WXSS
-- 数据接口：REST API
+- 数据交互：`wx.request`
+- 本地缓存：`wx.setStorageSync` / `wx.getStorageSync`
 
-## 目录结构
+## 项目结构
 
 ```text
 ├── app.js
@@ -48,48 +68,45 @@
 ├── API_DOC.md
 ├── README.md
 ├── sitemap.json
+├── config/
+│   └── api.js                 # 天气 / 地图服务配置
 ├── custom-tab-bar/
-│   ├── index.js
+│   ├── index.js              # 自定义底部导航逻辑
 │   ├── index.json
 │   ├── index.wxml
 │   └── index.wxss
+├── utils/
+│   └── api.js                # 业务接口地址管理
 └── pages/
-    ├── index/          # 对话首页
-    ├── mall/           # 商城页
-    ├── profile/        # 我的页
-    ├── login/          # 登录页
-    ├── agreement/      # 用户协议
-    └── privacy/        # 隐私政策
+    ├── index/                # AI 对话首页
+    ├── mall/                 # 商城列表页
+    ├── product/              # 商品详情页
+    ├── cart/                 # 购物车页
+    ├── order/                # 订单列表页
+    ├── favorite/             # 收藏页
+    ├── history/              # 浏览历史页
+    ├── profile/              # 我的页
+    ├── settings/             # 设置页
+    ├── login/                # 登录页
+    ├── agreement/            # 用户协议页
+    └── privacy/              # 隐私政策页
 ```
 
-## 本地开发
+## 关键配置
 
-### 环境要求
+### AI 对话接口
 
-- 微信开发者工具
-- 可用的小程序 AppID
-
-### 启动方式
-
-1. 使用微信开发者工具导入项目目录
-2. 在开发者工具中配置小程序 AppID
-3. 如开发阶段需要，可在开发者工具中关闭合法域名校验
-
-## AI 接口接入
-
-对话页的接口配置位于 [index.js](file:///c:/Users/Administrator/Desktop/xiuxiu/pages/index/index.js) 顶部：
+对话接口配置位于 [index.js](file:///c:/Users/Administrator/Desktop/xiuxiu/pages/index/index.js#L1-L8)：
 
 ```javascript
 const API_BASE_URL = 'https://your-api-domain.com/api'
 const API_KEY = 'your-api-key'
 ```
 
-接入时请将其替换为自己的后端地址和鉴权信息。
+当前聊天请求约定：
 
-### 当前约定
-
-- 聊天接口地址：`POST /chat`
-- 请求字段示例：
+- 请求地址：`POST /chat`
+- 请求体包含：
 
 ```json
 {
@@ -99,38 +116,96 @@ const API_KEY = 'your-api-key'
 }
 ```
 
-- 返回字段兼容：
-  - `reply`
-  - `content`
-  - `message`
+- 首页现已调整为“后端驱动卡片渲染”
+- 后端除了返回 `reply` 外，还可以返回 `recommendationMeta` 和 `products`，首页会自动渲染商品卡片
+- 详细字段协议见 [API_DOC.md](file:///C:/Users/Administrator/Desktop/xiuxiu/API_DOC.md)
+- 如果 `API_BASE_URL` 仍为占位地址，首页只会显示前端演示提示，不再本地拼商品推荐
 
-## 语音能力说明
+### 天气与定位
 
-- 当前小程序已接入微信录音管理器
-- 录音入口已完成
-- 语音转文字逻辑仍需接入真实语音识别服务
-- 可在 [voiceToText](file:///c:/Users/Administrator/Desktop/xiuxiu/pages/index/index.js#L126-L140) 中替换为你们自己的语音识别接口
+天气与定位配置位于 [api.js](file:///c:/Users/Administrator/Desktop/xiuxiu/config/api.js)：
 
-## 开发说明
+- `WEATHER_API_BASE_URL`：和风天气接口地址
+- `WEATHER_API_KEY`：天气服务密钥
+- `MAP_API_BASE_URL`：腾讯地图接口地址
+- `MAP_API_KEY`：地图服务密钥
 
-### 域名配置
+首页通过以下能力完成“当前位置 + 天气”展示：
 
-如果在微信开发者工具中调用接口出现合法域名报错，请：
+- `wx.getLocation`
+- 腾讯地图逆地理编码
+- 和风天气实时天气接口
 
-1. 在微信公众平台配置 `request` 合法域名
-2. 在开发工具中刷新域名配置
-3. 开发调试阶段可临时关闭合法域名校验
+### 商城与用户业务接口
 
-### 私有配置文件
+业务接口统一定义在 [api.js](file:///c:/Users/Administrator/Desktop/xiuxiu/utils/api.js)：
 
-`project.private.config.json` 属于本机开发配置，通常不建议提交到仓库。
+- 商品：列表、详情
+- 订单：列表、创建、详情
+- 收藏：列表、切换
+- 购物车：列表、添加、更新、删除
+- 用户：信息、登录、退出、注册
+- 位置：天气、地理编码
 
-## 后续可扩展方向
+## 本地开发
 
-- 接入真实旅游 AI 服务
-- 接入真实商品、订单和用户中心接口
-- 接入语音识别与语音播报
-- 增加景点详情、路线卡片、订单页等业务页面
+### 环境要求
+
+- 微信开发者工具
+- 一个可用的小程序 AppID
+
+### 启动方式
+
+1. 使用微信开发者工具导入项目目录
+2. 配置小程序 AppID
+3. 重新编译项目
+4. 如开发阶段尚未配置服务域名，可在开发者工具中临时关闭合法域名校验
+
+## 权限与域名说明
+
+### 位置权限
+
+项目已在 [app.json](file:///c:/Users/Administrator/Desktop/xiuxiu/app.json#L44-L52) 中声明位置相关权限：
+
+- `scope.userLocation`
+- `getLocation`
+- `chooseLocation`
+
+### 合法域名
+
+如果接口请求失败并提示“不在 request 合法域名列表中”，需要在微信公众平台后台配置以下域名：
+
+- 你们自己的 AI / 业务后端域名
+- 和风天气域名
+- 腾讯地图域名
+
+开发调试阶段，也可以在微信开发者工具中临时关闭合法域名校验。
+
+## 当前实现说明
+
+- 聊天页、商城页、商品详情页、购物车页都带有本地模拟数据兜底
+- 收藏、购物车、登录状态等部分能力依赖本地缓存
+- 语音识别接口尚未接入，当前仅完成录音入口和交互
+- 项目已经切换到自定义底部导航，相关样式与选中态需要同步维护
+
+## 注意事项
+
+- [project.private.config.json](file:///c:/Users/Administrator/Desktop/xiuxiu/project.private.config.json) 属于本机私有配置，不建议提交到仓库
+- 当前仓库中仍保留部分早期页面文件与新版 `index` 路由并存，实际启用页面以 [app.json](file:///c:/Users/Administrator/Desktop/xiuxiu/app.json) 中注册的路径为准
+
+## 后续建议
+
+- 接入正式 AI 对话服务和语音识别服务
+- 接入真实商品、订单、购物车、用户中心接口
+- 将首页位置、天气、旅游推荐进一步联动
+- 为订单详情、支付、评价等流程补全独立页面
+
+## 数据库说明
+
+- 当前建议：本地开发先使用 `SQLite`，正式环境再迁移到 `PostgreSQL`
+- 数据库建表方案见 [DB_SCHEMA.md](file:///C:/Users/Administrator/Desktop/xiuxiu/DB_SCHEMA.md)
+- SQLite 建表脚本见 [schema.sqlite.sql](file:///C:/Users/Administrator/Desktop/xiuxiu/database/schema.sqlite.sql)
+- PostgreSQL 建表脚本见 [schema.postgres.sql](file:///C:/Users/Administrator/Desktop/xiuxiu/database/schema.postgres.sql)
 
 ## 许可证
 

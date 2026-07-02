@@ -3,70 +3,64 @@
   <view class="search-bar">
     <view class="search-input-wrapper">
       <text class="search-icon">🔍</text>
-      <input class="search-input" placeholder="搜索桂林景点、美食、住宿..." />
+      <input class="search-input" placeholder="搜索桂林景点、美食、住宿..." value="{{searchText}}" bindinput="onSearch" />
     </view>
   </view>
 
   <!-- 分类导航 -->
   <scroll-view class="category-scroll" scroll-x>
-    <view class="category-list">
-      <view class="category-item active">
-        <text class="category-icon">�️</text>
-        <text class="category-name">漓江风光</text>
-      </view>
-      <view class="category-item">
-        <text class="category-icon">�️</text>
-        <text class="category-name">阳朔休闲</text>
-      </view>
-      <view class="category-item">
-        <text class="category-icon">🏛️</text>
-        <text class="category-name">市区景点</text>
-      </view>
-      <view class="category-item">
-        <text class="category-icon">🌾</text>
-        <text class="category-name">龙脊梯田</text>
-      </view>
-      <view class="category-item">
-        <text class="category-icon">�</text>
-        <text class="category-name">桂林美食</text>
-      </view>
-      <view class="category-item">
-        <text class="category-icon">�</text>
-        <text class="category-name">特色民宿</text>
+    <view class="category-bar">
+      <view 
+        class="category-item {{activeCategory === item.id ? 'active' : ''}}" 
+        wx:for="{{categories}}" 
+        wx:key="id"
+        bindtap="switchCategory"
+        data-id="{{item.id}}"
+      >
+        <text class="category-text">{{item.name}}</text>
       </view>
     </view>
   </scroll-view>
 
-  <!-- 推荐横幅 -->
-  <view class="banner">
-    <view class="banner-content">
-      <text class="banner-title">桂林山水甲天下</text>
-      <text class="banner-desc">漓江游船·阳朔山水·龙脊梯田</text>
-    </view>
-  </view>
-
   <!-- 商品列表 -->
   <scroll-view class="product-list" scroll-y>
     <view class="product-grid">
-      <view class="product-card" wx:for="{{products}}" wx:key="id">
-        <image class="product-img" src="{{item.image}}" mode="aspectFill" />
-        <view class="product-tags">
-          <text class="tag" wx:if="{{item.tag}}">{{item.tag}}</text>
+      <view 
+        class="product-card" 
+        wx:for="{{filteredProducts}}" 
+        wx:key="id"
+        bindtap="handleProductClick"
+        data-product="{{item}}"
+      >
+        <view class="card-header">
+          <image class="product-img" src="{{item.image}}" mode="aspectFill" />
+          <view class="product-tags">
+            <text class="tag" wx:if="{{item.tag}}">{{item.tag}}</text>
+          </view>
+          <view class="favorite-btn" catchtap="toggleFavorite" data-product="{{item}}">
+            <text class="favorite-icon {{item.isFavorite ? 'active' : ''}}">❤️</text>
+          </view>
         </view>
         <view class="product-info">
           <text class="product-name">{{item.name}}</text>
           <text class="product-desc">{{item.desc}}</text>
           <view class="product-bottom">
-            <view class="price-wrapper">
-              <text class="price-sign">¥</text>
-              <text class="price-num">{{item.price}}</text>
+              <view class="price-wrapper">
+                <text class="price-sign">¥</text>
+                <text class="price-num">{{item.price}}</text>
+              </view>
+              <view class="sales-wrapper">
+                <text class="sales-text" wx:if="{{item.sales}}">已售 {{item.sales}}</text>
+              </view>
             </view>
-            <view class="sales-wrapper">
-              <text class="sales-text">已售 {{item.sales}}</text>
-            </view>
-          </view>
         </view>
       </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{filteredProducts.length === 0}}">
+      <text class="empty-icon">🔍</text>
+      <text class="empty-text">暂无相关商品</text>
     </view>
   </scroll-view>
 </view>

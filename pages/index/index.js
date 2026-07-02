@@ -1,4 +1,5 @@
 const app = getApp()
+const config = require('../../config/api.js')
 
 // ============================================
 // 后端API配置 - 请修改为你的后端地址
@@ -19,15 +20,25 @@ Page({
     isCancel: false,
     recorderManager: null,
     startY: 0,
-    voiceMode: false // 默认文字模式
+    voiceMode: false,
+    location: '桂林市·象山区',
+    weather: '多云',
+    temperature: '28°',
+    weatherIcon: '⛅',
+    isRefreshingLocation: false,
+    isLoggedIn: false,
+    isGuest: false
   },
 
   onLoad() {
     this.initConversation()
     this.initRecorder()
+    this.getLocationAndWeather()
+    this.syncAuthState()
   },
 
   onShow() {
+    this.syncAuthState()
     this.updateTabBar(0)
     if (this.data.messageList.length || this.data.isLoading) {
       setTimeout(() => {
@@ -40,6 +51,23 @@ Page({
     if (this.data.recorderManager) {
       this.data.recorderManager.stop()
     }
+  },
+
+  syncAuthState() {
+    const app = getApp()
+    const isLoggedIn = !!wx.getStorageSync('isLoggedIn')
+    const isGuest = !!wx.getStorageSync('isGuest')
+
+    this.setData({
+      isLoggedIn,
+      isGuest
+    })
+  },
+
+  goLogin() {
+    wx.navigateTo({
+      url: '/pages/login/login'
+    })
   },
 
   // 初始化录音管理器
@@ -217,8 +245,12 @@ Page({
       },
       success: (res) => {
         if (res.statusCode === 200 && res.data) {
-          const aiReply = res.data.reply || res.data.content || res.data.message || '抱歉，我没有收到回复'
-          this.addAIMessage(aiReply)
+          const parsedResponse = this.parseAIApiResponse(res.data)
+          this.addAIMessage(
+            parsedResponse.reply,
+            parsedResponse.products,
+            parsedResponse.recommendationMeta
+          )
         } else {
           this.addAIMessage('抱歉，服务出现了问题，请稍后再试。')
         }
@@ -231,12 +263,19 @@ Page({
   },
 
   // 添加AI消息
-  addAIMessage(content) {
+  addAIMessage(content, products, recommendationMeta) {
+    const normalizedProducts = this.normalizeProducts(products)
+    const finalRecommendationMeta = normalizedProducts.length
+      ? (recommendationMeta || this.getDefaultRecommendationMeta())
+      : null
+
     const aiMsgId = this.data.msgIdCounter + 1
     const aiMsg = {
       id: aiMsgId,
       role: 'ai',
       content: content,
+      products: normalizedProducts,
+      recommendationMeta: finalRecommendationMeta,
       timestamp: Date.now()
     }
 
@@ -252,29 +291,137 @@ Page({
   // 模拟AI回复（用于测试界面）
   mockAIReply(userMessage) {
     setTimeout(() => {
-      let reply = ''
-      
-      // 简单的关键词回复
-      if (userMessage.includes('桂林')) {
-        reply = '桂林是世界著名的风景游览城市，有着举世无双的喀斯特地貌。您想了解桂林的景点、美食还是住宿呢？'
-      } else if (userMessage.includes('阳朔')) {
-        reply = '阳朔是桂林最著名的旅游县，有漓江、遇龙河、西街等著名景点。您是打算去阳朔旅游吗？'
-      } else if (userMessage.includes('米粉')) {
-        reply = '桂林米粉是桂林最有名的特色美食，以其独特的风味和口感闻名。推荐您去尝一下正宗的桂林米粉！'
-      } else if (userMessage.includes('天气')) {
-        reply = '桂林属于亚热带季风气候，四季分明。您可以告诉我您想了解哪个季节的天气情况？'
-      } else if (userMessage.includes('景点') || userMessage.includes('推荐')) {
-        reply = '桂林必游景点推荐：1. 漓江风景区 2. 象鼻山 3. 阳朔西街 4. 遇龙河 5. 龙脊梯田。您对哪个最感兴趣？'
-      } else if (userMessage.includes('路线') || userMessage.includes('规划')) {
-        reply = '桂林经典路线推荐：Day1 象鼻山+两江四湖；Day2 漓江游船+阳朔西街；Day3 遇龙河竹筏+银子岩。需要更详细的规划吗？'
-      } else if (userMessage.includes('美食')) {
-        reply = '桂林美食推荐：桂林米粉、阳朔啤酒鱼、荔浦芋扣肉、田螺酿、恭城油茶。您想了解哪一个？'
-      } else {
-        reply = '收到！我是您的桂林旅游助手。关于桂林旅游，您有什么想了解的？比如景点推荐、美食攻略、路线规划等都可以问我哦！'
+      const demoResponse = this.getBossDemoResponse(userMessage)
+
+      if (demoResponse) {
+        this.addAIMessage(
+          demoResponse.reply,
+          demoResponse.products,
+          demoResponse.recommendationMeta
+        )
+        return
       }
-      
+
+      const reply = '当前为前端演示模式。请接入你们自己的 AI 接口和商品数据库，后端返回回复文案与商品卡片数据后，这里会自动按当前页面样式渲染展示。'
       this.addAIMessage(reply)
     }, 800 + Math.random() * 500)
+  },
+
+  getBossDemoResponse(userMessage) {
+    var normalizedMessage = (userMessage || '').replace(/\s+/g, '')
+    var demoKeywords = ['老板演示', '演示卡片', '商品卡片演示', '我想去象山公园玩']
+    var isDemoMessage = demoKeywords.some(function(keyword) {
+      return normalizedMessage.indexOf(keyword) > -1
+    })
+
+    if (!isDemoMessage) {
+      return null
+    }
+
+    return {
+      reply: '可以，当前先按演示模式给你展示一组商城推荐卡片。后续接入你们自己的 AI 和数据库后，这里的话术和商品都由后端实时返回，前端直接按当前样式渲染。',
+      recommendationMeta: {
+        title: '商城推荐',
+        hint: '以下为老板演示专用卡片，点击可进入商品详情页'
+      },
+      products: [
+        {
+          id: 3,
+          name: '象鼻山门票',
+          desc: '桂林城徽地标，必游景点',
+          price: '55',
+          image: 'https://picsum.photos/seed/guilin-scenic1/400/300',
+          tag: '必游'
+        },
+        {
+          id: 7,
+          name: '两江四湖夜游',
+          desc: '乘船夜游桂林城，灯光璀璨',
+          price: '185',
+          image: 'https://picsum.photos/seed/guilin-night1/400/300',
+          tag: '夜景'
+        },
+        {
+          id: 4,
+          name: '阳朔西街特色民宿',
+          desc: '临溪而居，静谧舒适',
+          price: '299',
+          image: 'https://picsum.photos/seed/guilin-hotel1/400/300',
+          tag: '推荐'
+        }
+      ]
+    }
+  },
+
+  parseAIApiResponse(responseData) {
+    // 后端可返回：
+    // {
+    //   reply: 'AI 回复文案',
+    //   recommendationMeta: { title: '商城推荐', hint: '说明文案' },
+    //   products: [
+    //     { id, name, desc, price, image, tag }
+    //   ]
+    // }
+    // 也兼容 cards / recommendations / goodsList 等命名。
+    const data = responseData.data || responseData.result || responseData
+    const reply = data.reply || data.content || data.message || data.text || '抱歉，我没有收到回复'
+    const rawProducts = data.products || data.cards || data.recommendations || data.goodsList || []
+    const recommendationMeta = data.recommendationMeta || data.cardMeta || null
+
+    return {
+      reply: reply,
+      products: this.normalizeProducts(rawProducts),
+      recommendationMeta: this.normalizeRecommendationMeta(recommendationMeta)
+    }
+  },
+
+  normalizeProducts(products) {
+    if (!Array.isArray(products)) {
+      return []
+    }
+
+    return products.map(function(item, index) {
+      return {
+        id: item.id || item.productId || item.goodsId || ('card_' + index),
+        name: item.name || item.title || item.productName || '未命名商品',
+        desc: item.desc || item.description || item.subtitle || item.summary || '',
+        price: item.price || item.salePrice || item.currentPrice || '',
+        image: item.image || item.imageUrl || item.cover || item.coverUrl || '',
+        tag: item.tag || item.badge || item.label || ''
+      }
+    }).filter(function(item) {
+      return !!item.name
+    })
+  },
+
+  normalizeRecommendationMeta(meta) {
+    if (!meta) {
+      return null
+    }
+
+    return {
+      title: meta.title || meta.heading || meta.label || '商城推荐',
+      hint: meta.hint || meta.desc || meta.description || '以下卡片均来自当前商城，点击可进入商品详情页'
+    }
+  },
+
+  getDefaultRecommendationMeta() {
+    return {
+      title: '商城推荐',
+      hint: '以下卡片均来自当前商城，点击可进入商品详情页'
+    }
+  },
+
+  goProductDetail(e) {
+    const productId = e.currentTarget.dataset.id
+
+    if (!productId) {
+      return
+    }
+
+    wx.navigateTo({
+      url: '/pages/product/detail?id=' + productId
+    })
   },
 
   // 滚动到底部
@@ -326,5 +473,160 @@ Page({
     if (tabBar && typeof tabBar.setData === 'function') {
       tabBar.setData({ selected })
     }
+  },
+
+  getLocationAndWeather(callback) {
+    var app = getApp()
+    
+    wx.getLocation({
+      type: 'gcj02',
+      success: function(res) {
+        var latitude = res.latitude
+        var longitude = res.longitude
+        this.reverseGeocode(latitude, longitude, callback)
+      }.bind(this),
+      fail: function(err) {
+        console.error('获取位置失败:', err)
+        
+        var defaultLocation = app.globalData.location || '桂林市·象山区'
+        var defaultWeather = app.globalData.weather || '多云'
+        var defaultTemp = app.globalData.temperature || '28°'
+        
+        this.setData({
+          location: defaultLocation,
+          weather: defaultWeather,
+          temperature: defaultTemp,
+          weatherIcon: this.getWeatherIcon(defaultWeather)
+        })
+        
+        if (typeof callback === 'function') {
+          callback()
+        }
+      }.bind(this)
+    })
+  },
+
+  reverseGeocode(latitude, longitude, callback) {
+    wx.request({
+      url: config.MAP_API_BASE_URL + '/ws/geocoder/v1/?location=' + latitude + ',' + longitude + '&key=' + config.MAP_API_KEY,
+      timeout: 5000,
+      success: function(res) {
+        if (res.data && res.data.status === 0 && res.data.result) {
+          var addressComponent = res.data.result.address_component
+          var city = addressComponent.city || '桂林市'
+          var district = addressComponent.district || '象山区'
+          var location = city.replace('市', '') + '·' + district
+          
+          this.setData({ location: location })
+          this.getWeatherByCity(city, callback)
+        } else {
+          this.useDefaultLocation(callback)
+        }
+      }.bind(this),
+      fail: function() {
+        this.useDefaultLocation(callback)
+      }.bind(this),
+      complete: function() {}
+    })
+  },
+
+  getWeatherByCity(city, callback) {
+    wx.request({
+      url: config.WEATHER_API_BASE_URL + '/v7/weather/now?location=' + city + '&key=' + config.WEATHER_API_KEY,
+      timeout: 5000,
+      success: function(res) {
+        if (res.data && res.data.code === '200' && res.data.now) {
+          var text = res.data.now.text
+          var temp = res.data.now.temp
+          this.setData({
+            weather: text,
+            temperature: temp + '°',
+            weatherIcon: this.getWeatherIcon(text)
+          })
+          
+          var app = getApp()
+          app.globalData.location = this.data.location
+          app.globalData.weather = text
+          app.globalData.temperature = temp + '°'
+          
+          if (typeof callback === 'function') {
+            callback()
+          }
+        } else {
+          this.useDefaultWeather(callback)
+        }
+      }.bind(this),
+      fail: function() {
+        this.useDefaultWeather(callback)
+      }.bind(this),
+      complete: function() {}
+    })
+  },
+
+  useDefaultLocation(callback) {
+    var app = getApp()
+    var defaultLocation = app.globalData.location || '桂林市·象山区'
+    this.setData({ location: defaultLocation })
+    this.useDefaultWeather(callback)
+  },
+
+  useDefaultWeather(callback) {
+    var app = getApp()
+    var defaultWeather = app.globalData.weather || '多云'
+    var defaultTemp = app.globalData.temperature || '28°'
+    
+    this.setData({
+      weather: defaultWeather,
+      temperature: defaultTemp,
+      weatherIcon: this.getWeatherIcon(defaultWeather)
+    })
+    
+    if (typeof callback === 'function') {
+      callback()
+    }
+  },
+
+  getWeatherIcon(weatherText) {
+    var iconMap = {
+      '晴': '☀️',
+      '多云': '⛅',
+      '阴': '☁️',
+      '小雨': '🌧️',
+      '中雨': '🌧️',
+      '大雨': '⛈️',
+      '暴雨': '⛈️',
+      '雷阵雨': '⛈️',
+      '雨夹雪': '🌨️',
+      '小雪': '❄️',
+      '中雪': '❄️',
+      '大雪': '❄️',
+      '暴雪': '❄️',
+      '雾': '🌫️',
+      '霾': '😷',
+      '沙尘': '🌪️',
+      '台风': '🌀'
+    }
+    
+    for (const [key, icon] of Object.entries(iconMap)) {
+      if (weatherText.includes(key)) {
+        return icon
+      }
+    }
+    
+    return '⛅'
+  },
+
+  refreshLocation() {
+    if (this.data.isRefreshingLocation) return
+    
+    this.setData({ isRefreshingLocation: true })
+    
+    wx.showLoading({ title: '更新中...' })
+    
+    this.getLocationAndWeather(() => {
+      this.setData({ isRefreshingLocation: false })
+      wx.hideLoading()
+      wx.showToast({ title: '更新成功', icon: 'success', duration: 1500 })
+    })
   }
 })

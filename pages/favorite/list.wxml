@@ -1,0 +1,33 @@
+<view class="favorite-container">
+  <scroll-view class="favorite-list" scroll-y>
+    <view class="favorite-grid">
+      <view 
+        class="favorite-card" 
+        wx:for="{{favorites}}" 
+        wx:key="id"
+        bindtap="onProductTap"
+        data-product="{{item}}"
+      >
+        <view class="card-img-wrapper">
+          <image class="card-img" src="{{item.image}}" mode="aspectFill" />
+          <view class="remove-btn" catchtap="onRemove" data-id="{{item.id}}">
+            <text class="remove-icon">✕</text>
+          </view>
+        </view>
+        <view class="card-info">
+          <text class="card-name">{{item.name}}</text>
+          <text class="card-desc">{{item.desc}}</text>
+          <view class="card-bottom">
+            <text class="card-price">¥{{item.price}}</text>
+            <text class="card-tag">{{item.tag}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{favorites.length === 0}}">
+      <text class="empty-icon">❤️</text>
+      <text class="empty-text">暂无收藏商品</text>
+    </view>
+  </scroll-view>
+</view>

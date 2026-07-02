@@ -4,8 +4,14 @@
     "pages/mall/mall",
     "pages/profile/profile",
     "pages/login/login",
-    "pages/agreement/agreement",
-    "pages/privacy/privacy"
+    "pages/product/detail",
+    "pages/order/list",
+    "pages/favorite/list",
+    "pages/history/list",
+    "pages/settings/index",
+    "pages/agreement/index",
+    "pages/privacy/index",
+    "pages/cart/list"
   ],
   "window": {
     "backgroundTextStyle": "dark",

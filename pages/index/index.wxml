@@ -1,6 +1,17 @@
 <view class="chat-container">
-  <!-- 顶部按钮 -->
+  <!-- 顶部信息栏 -->
   <view class="chat-top-bar">
+    <view class="location-weather" bindtap="refreshLocation">
+      <view class="location-info">
+        <text class="location-icon">📍</text>
+        <text class="location-text">{{location}}</text>
+      </view>
+      <view class="weather-info">
+        <text class="weather-icon">{{weatherIcon}}</text>
+        <text class="weather-text">{{weather}}</text>
+        <text class="temp-text">{{temperature}}</text>
+      </view>
+    </view>
     <view class="header-btn" bindtap="newChat">
       <text class="header-icon">+</text>
       <text class="header-text">新对话</text>
@@ -26,6 +37,9 @@
 
         <!-- 快捷提示词 -->
         <view class="quick-prompts">
+          <view class="prompt-item" bindtap="sendPrompt" data-prompt="老板演示卡片">
+            <text class="prompt-text">老板演示卡片</text>
+          </view>
           <view class="prompt-item" bindtap="sendPrompt" data-prompt="漓江游船哪个段风景最好？">
             <text class="prompt-text">漓江游船哪个段最好？</text>
           </view>
@@ -65,6 +79,46 @@
           <view class="message-content">
             <view class="message-bubble {{item.role}}">
               <text class="message-text">{{item.content}}</text>
+            </view>
+
+            <view
+              class="recommend-section"
+              wx:if="{{item.role === 'ai' && item.products && item.products.length}}"
+            >
+              <view class="recommend-head">
+                <view class="recommend-head-badge">{{item.recommendationMeta.title}}</view>
+                <text class="recommend-head-text">{{item.recommendationMeta.hint}}</text>
+              </view>
+
+              <scroll-view
+                class="recommend-scroll"
+                scroll-x
+              >
+                <view class="recommend-list">
+                  <view
+                    class="recommend-card"
+                    wx:for="{{item.products}}"
+                    wx:key="id"
+                    bindtap="goProductDetail"
+                    data-id="{{item.id}}"
+                  >
+                    <image class="recommend-image" src="{{item.image}}" mode="aspectFill" />
+                    <view class="recommend-image-mask"></view>
+                    <view class="recommend-tag" wx:if="{{item.tag}}">{{item.tag}}</view>
+                    <view class="recommend-body">
+                      <text class="recommend-name">{{item.name}}</text>
+                      <text class="recommend-desc">{{item.desc}}</text>
+                      <view class="recommend-footer">
+                        <view class="recommend-price">
+                          <text class="recommend-price-sign">¥</text>
+                          <text class="recommend-price-num">{{item.price}}</text>
+                        </view>
+                        <view class="recommend-action">查看详情</view>
+                      </view>
+                    </view>
+                  </view>
+                </view>
+              </scroll-view>
             </view>
           </view>
         </view>

@@ -4,18 +4,65 @@
   flex-direction: column;
   height: 100vh;
   box-sizing: border-box;
-  padding-bottom: calc(74rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(138rpx + env(safe-area-inset-bottom));
   background: #F7F8FA;
 }
 
 /* 顶部按钮栏 */
 .chat-top-bar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   padding: 20rpx 32rpx;
   background: #ffffff;
   border-bottom: 1rpx solid #E5E7EB;
   flex-shrink: 0;
+}
+
+.location-weather {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.location-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4rpx;
+}
+
+.location-icon {
+  font-size: 24rpx;
+  margin-right: 6rpx;
+}
+
+.location-text {
+  font-size: 28rpx;
+  color: #1F2937;
+  font-weight: 600;
+}
+
+.weather-info {
+  display: flex;
+  align-items: center;
+}
+
+.weather-icon {
+  font-size: 24rpx;
+  margin-right: 6rpx;
+}
+
+.weather-text {
+  font-size: 24rpx;
+  color: #6B7280;
+  margin-right: 12rpx;
+}
+
+.temp-text {
+  font-size: 24rpx;
+  color: #F59E0B;
+  font-weight: 500;
 }
 
 .header-btn {
@@ -339,6 +386,147 @@
 .message-text {
   font-size: 30rpx;
   line-height: 1.7;
+}
+
+.recommend-section {
+  margin-top: 18rpx;
+  padding: 16rpx;
+  border-radius: 28rpx;
+  background: #ffffff;
+  border: 2rpx solid #E5E7EB;
+  box-shadow: 0 8rpx 20rpx rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.recommend-head {
+  margin-bottom: 14rpx;
+  padding: 0 2rpx;
+}
+
+.recommend-head-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 112rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #ECFDF5;
+  color: #059669;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.recommend-head-text {
+  display: block;
+  margin-top: 8rpx;
+  color: #4B5563;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.recommend-scroll {
+  width: 100%;
+  margin: 0 -2rpx;
+}
+
+.recommend-list {
+  display: inline-flex;
+  gap: 12rpx;
+  padding: 0 2rpx 2rpx;
+}
+
+.recommend-card {
+  position: relative;
+  width: 320rpx;
+  background: linear-gradient(180deg, #1b2433 0%, #000000 100%);
+  border: 2rpx solid rgba(255, 255, 255, 0.06);
+  border-radius: 28rpx;
+  overflow: hidden;
+  box-shadow: 0 16rpx 36rpx rgba(15, 23, 42, 0.2);
+  flex-shrink: 0;
+}
+
+.recommend-image {
+  width: 320rpx;
+  height: 236rpx;
+  background: #1F2937;
+}
+
+.recommend-image-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 236rpx;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.06) 0%, rgba(15, 23, 42, 0.44) 100%);
+}
+
+.recommend-tag {
+  position: absolute;
+  top: 16rpx;
+  left: 16rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(17, 24, 39, 0.72);
+  border: 2rpx solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-size: 22rpx;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.recommend-body {
+  padding: 18rpx 18rpx 20rpx;
+}
+
+.recommend-name {
+  display: block;
+  font-size: 28rpx;
+  line-height: 1.4;
+  color: #F9FAFB;
+  font-weight: 600;
+}
+
+.recommend-desc {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: rgba(229, 231, 235, 0.74);
+  min-height: 66rpx;
+}
+
+.recommend-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16rpx;
+}
+
+.recommend-price {
+  display: flex;
+  align-items: baseline;
+  color: #FB923C;
+}
+
+.recommend-price-sign {
+  font-size: 22rpx;
+  margin-right: 4rpx;
+}
+
+.recommend-price-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.recommend-action {
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(16, 185, 129, 0.16);
+  color: #6EE7B7;
+  font-size: 22rpx;
+  font-weight: 600;
 }
 
 /* 加载状态 */

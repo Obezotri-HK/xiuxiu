@@ -1,0 +1,33 @@
+<view class="history-container">
+  <view class="history-header">
+    <text class="history-title">浏览历史</text>
+    <view class="clear-btn" bindtap="onClear">
+      <text class="clear-text">清空</text>
+    </view>
+  </view>
+
+  <scroll-view class="history-list" scroll-y>
+    <view 
+      class="history-item" 
+      wx:for="{{history}}" 
+      wx:key="id"
+      bindtap="onProductTap"
+      data-product="{{item}}"
+    >
+      <image class="item-img" src="{{item.image}}" mode="aspectFill" />
+      <view class="item-info">
+        <text class="item-name">{{item.name}}</text>
+        <text class="item-desc">{{item.desc}}</text>
+        <view class="item-bottom">
+          <text class="item-price">¥{{item.price}}</text>
+          <text class="item-time">{{item.time}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{history.length === 0}}">
+      <text class="empty-icon">👁️</text>
+      <text class="empty-text">暂无浏览记录</text>
+    </view>
+  </scroll-view>
+</view>

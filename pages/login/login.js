@@ -15,9 +15,7 @@ Page({
     const isLoggedIn = wx.getStorageSync('isLoggedIn') || false
 
     if (isLoggedIn) {
-      wx.redirectTo({
-        url: '/pages/index/index'
-      })
+      this.navigateAfterAuth()
       return
     }
 
@@ -61,6 +59,21 @@ Page({
   validatePhone(phone) {
     const phoneReg = /^1[3-9]\d{9}$/
     return phoneReg.test(phone)
+  },
+
+  navigateAfterAuth() {
+    const pages = getCurrentPages()
+
+    if (pages.length > 1) {
+      wx.navigateBack({
+        delta: 1
+      })
+      return
+    }
+
+    wx.switchTab({
+      url: '/pages/index/index'
+    })
   },
 
   sendCode() {
@@ -218,10 +231,12 @@ Page({
       wx.setStorageSync('userInfo', mockUserInfo)
       wx.setStorageSync('token', 'mock_token_' + Date.now())
       wx.setStorageSync('isLoggedIn', true)
+      wx.setStorageSync('isGuest', false)
       wx.setStorageSync('remainingCount', 9999)
 
       app.globalData.userInfo = mockUserInfo
       app.globalData.isLoggedIn = true
+      app.globalData.isGuest = false
       app.globalData.remainingCount = 9999
 
       if (this.timer) {
@@ -236,9 +251,7 @@ Page({
       })
 
       setTimeout(() => {
-        wx.redirectTo({
-          url: '/pages/index/index'
-        })
+        this.navigateAfterAuth()
       }, 1500)
     }, 1000)
   },
@@ -308,10 +321,12 @@ Page({
       wx.setStorageSync('userInfo', mockUserInfo)
       wx.setStorageSync('token', 'mock_token_' + Date.now())
       wx.setStorageSync('isLoggedIn', true)
+      wx.setStorageSync('isGuest', false)
       wx.setStorageSync('remainingCount', 9999)
 
       app.globalData.userInfo = mockUserInfo
       app.globalData.isLoggedIn = true
+      app.globalData.isGuest = false
       app.globalData.remainingCount = 9999
 
       wx.showToast({
@@ -321,22 +336,20 @@ Page({
       })
 
       setTimeout(() => {
-        wx.redirectTo({
-          url: '/pages/index/index'
-        })
+        this.navigateAfterAuth()
       }, 1500)
     }, 1000)
   },
 
   goToAgreement() {
     wx.navigateTo({
-      url: '/pages/agreement/agreement'
+      url: '/pages/agreement/index'
     })
   },
 
   goToPrivacy() {
     wx.navigateTo({
-      url: '/pages/privacy/privacy'
+      url: '/pages/privacy/index'
     })
   },
 
@@ -367,10 +380,12 @@ Page({
           
           wx.setStorageSync('userInfo', guestInfo)
           wx.setStorageSync('isGuest', true)
+          wx.setStorageSync('isLoggedIn', false)
           wx.setStorageSync('remainingCount', 50)
 
           app.globalData.userInfo = guestInfo
           app.globalData.isGuest = true
+          app.globalData.isLoggedIn = false
           app.globalData.remainingCount = 50
 
           wx.showToast({
@@ -380,9 +395,7 @@ Page({
           })
 
           setTimeout(() => {
-            wx.redirectTo({
-              url: '/pages/index/index'
-            })
+            this.navigateAfterAuth()
           }, 1500)
         }, 800)
       },

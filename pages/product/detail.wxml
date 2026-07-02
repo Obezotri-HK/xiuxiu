@@ -1,0 +1,100 @@
+<view class="product-detail" wx:if="{{product}}">
+  <swiper class="product-swiper" indicator-dots autoplay circular>
+    <swiper-item wx:for="{{product.images || [product.image]}}" wx:key="*this">
+      <image class="swiper-image" src="{{item}}" mode="aspectFill" />
+    </swiper-item>
+  </swiper>
+
+  <view class="product-header">
+    <view class="tag-wrapper">
+      <text class="tag" wx:if="{{product.tag}}">{{product.tag}}</text>
+    </view>
+    <text class="product-name">{{product.name}}</text>
+    <text class="product-desc">{{product.desc}}</text>
+    <view class="price-section">
+      <view class="current-price">
+        <text class="price-sign">¥</text>
+        <text class="price-num">{{selectedSpecs.spec ? selectedSpecs.spec.price : product.price}}</text>
+      </view>
+      <text class="original-price" wx:if="{{product.originalPrice}}">¥{{product.originalPrice}}</text>
+    </view>
+  </view>
+
+  <view class="spec-section">
+    <view class="section-title">
+      <text class="title-text">选择规格</text>
+      <text class="required">*</text>
+    </view>
+    <view class="spec-list">
+      <view 
+        class="spec-item {{selectedSpecs.index === index ? 'selected' : ''}}"
+        wx:for="{{product.specs}}"
+        wx:key="index"
+        bindtap="onSpecSelect"
+        data-index="{{index}}"
+      >
+        <text class="spec-name">{{item.name}}</text>
+        <text class="spec-price">¥{{item.price}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="quantity-section">
+    <view class="section-title">
+      <text class="title-text">购买数量</text>
+    </view>
+    <view class="quantity-control">
+      <view class="qty-btn" bindtap="onQuantityChange" data-delta="-1">
+        <text>-</text>
+      </view>
+      <text class="qty-value">{{quantity}}</text>
+      <view class="qty-btn" bindtap="onQuantityChange" data-delta="1">
+        <text>+</text>
+      </view>
+      <text class="stock-text">库存 {{product.stock}} 件</text>
+    </view>
+  </view>
+
+  <view class="detail-section">
+    <view class="section-title">
+      <text class="title-text">商品详情</text>
+    </view>
+    <text class="detail-text">{{product.detail}}</text>
+  </view>
+
+  <view class="policy-section">
+    <view class="section-title">
+      <text class="title-text">购买须知</text>
+    </view>
+    <view class="policy-content">
+      <text class="policy-text" wx:for="{{product.policy.split('；')}}" wx:key="index">{{item}}</text>
+    </view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="bottom-left">
+      <view class="icon-item" bindtap="onToggleFavorite">
+        <text class="icon {{isFavorite ? 'active' : ''}}">{{isFavorite ? '❤️' : '🤍'}}</text>
+        <text class="icon-text">{{isFavorite ? '已收藏' : '收藏'}}</text>
+      </view>
+      <view class="icon-item" bindtap="onCartTap">
+        <text class="icon">🛒</text>
+        <text class="icon-text">购物车</text>
+        <text class="cart-badge" wx:if="{{cartCount > 0}}">{{cartCount}}</text>
+      </view>
+    </view>
+    <view class="bottom-right">
+      <view class="btn-cart" bindtap="onAddToCart">
+        <text>加入购物车</text>
+      </view>
+      <view class="btn-buy" bindtap="onBuyNow">
+        <text>立即购买</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<view class="loading-state" wx:if="{{isLoading}}">
+  <text class="loading-icon">⏳</text>
+  <text class="loading-text">加载中...</text>
+</view>

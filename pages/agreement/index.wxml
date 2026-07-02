@@ -1,0 +1,58 @@
+<view class="agreement-container">
+  <scroll-view class="agreement-content" scroll-y>
+    <view class="agreement-title">用户服务协议</view>
+    
+    <view class="section">
+      <view class="section-title">一、协议的生效</view>
+      <view class="section-content">
+        <text>欢迎您使用桂林旅游助手小程序（以下简称"本小程序"）。本协议是您与本小程序运营方之间关于使用本小程序服务所订立的协议。</text>
+        <text>您在使用本小程序服务前，请仔细阅读本协议。您一旦使用本小程序服务，即表示您已同意并接受本协议的全部内容。</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">二、服务内容</view>
+      <view class="section-content">
+        <text>本小程序为用户提供桂林旅游相关的信息服务，包括但不限于景点推荐、美食攻略、路线规划、门票预订等。</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">三、用户义务</view>
+      <view class="section-content">
+        <text>1. 用户应保证其提供的信息真实、准确、完整。</text>
+        <text>2. 用户应遵守国家法律法规及本协议的规定，不得利用本小程序进行违法活动。</text>
+        <text>3. 用户应妥善保管自己的账号和密码，不得泄露给他人使用。</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">四、隐私保护</view>
+      <view class="section-content">
+        <text>本小程序重视用户隐私保护，将按照《隐私政策》的规定收集、使用和保护用户信息。</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">五、免责声明</view>
+      <view class="section-content">
+        <text>本小程序提供的信息仅供参考，实际服务以商家提供为准。本小程序不对因使用本服务而产生的任何损失承担责任。</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">六、协议的修改</view>
+      <view class="section-content">
+        <text>本小程序有权随时修改本协议，修改后的协议将在小程序内公示。用户继续使用本服务即视为同意修改后的协议。</text>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-title">七、联系我们</view>
+      <view class="section-content">
+        <text>客服热线：400-123-4567</text>
+        <text>服务时间：9:00-21:00</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>

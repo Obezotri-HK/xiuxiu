@@ -1,0 +1,51 @@
+.settings-container {
+  min-height: 100vh;
+  background: #F7F8FA;
+}
+
+.menu-list {
+  background: #ffffff;
+  margin-top: 24rpx;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+}
+
+.menu-icon {
+  font-size: 40rpx;
+  margin-right: 20rpx;
+}
+
+.menu-text {
+  font-size: 30rpx;
+  color: #1F2937;
+}
+
+.menu-arrow {
+  font-size: 40rpx;
+  color: #D1D5DB;
+}
+
+.version-info {
+  text-align: center;
+  padding: 80rpx 0;
+}
+
+.version-text {
+  font-size: 26rpx;
+  color: #9CA3AF;
+}
